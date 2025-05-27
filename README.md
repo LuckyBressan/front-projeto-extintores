@@ -1,54 +1,27 @@
-# React + TypeScript + Vite
+# Front-End do Projeto de Extintores 🧯
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Esta é a parte front-end do projeto [Extintores](https://github.com/LuckyBressan/back-projeto-extintores "Projeto back-end do extintores").
 
-Currently, two official plugins are available:
+O projeto é para estudo e serve como aprimoramento das minhas habilidades em React.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Como executar o projeto? ⚙️
 
-## Expanding the ESLint configuration
+Antes de *startarmos* o projeto front-end rodando um `npm run dev`, precisamos dos arquivos **back-end** rodando, de forma que seja possível para o Front fazer as requisições para nossa API de dados.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+> O projeto está disponível em [Back-End](https://github.com/LuckyBressan/back-projeto-extintores "Projeto back-end do extintores").
+>
+> Após clonar o repositório em questão, basta acessá-lo com sua IDE de preferência (recomendo Visual Studio 2022) e subir a API no **swagger**
+>
+> O repositório em questão já consta com uma documentação sobre como fazer as requisições aos endpoints utilizando o Insomnia, inclusive há uma [collection do Insomnia](https://github.com/LuckyBressan/back-projeto-extintores/blob/main/Insomnia_2025-04-19.yaml) no repositório, facilitando o processo de teste sem a necessidade da parte front-end.
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+Após subir a parte back-end do projeto, basta acessar o terminal da aplicação front-end, executar o comando `npm run dev` e acessar a url `localhost` que o vite forneceu.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Stacks 📚
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+As tecnologias usadas para o desenvolvimento do projeto foram:
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+![Vite](public/assets/svg/vite.svg "Vite")
+![React](public/assets/svg/react.svg "React")
+![Shadcn](public/assets/svg/shadcn.svg "Shadcn")
+![Tailwind](public/assets/svg/tailwind.svg "Tailwind")
+![TypeScript](public/assets/svg/typescript.svg "TypeScript")
