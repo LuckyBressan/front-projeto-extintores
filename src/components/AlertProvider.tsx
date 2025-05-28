@@ -8,7 +8,7 @@ type AlertContextType = {
 
 type AlertMessage = {
     title: string;
-    description: string;
+    description?: string;
 }
 
 const AlertContext = createContext<AlertContextType | undefined>(undefined);
@@ -40,7 +40,7 @@ export function AlertProvider({ children }: { children: ReactNode }) {
         <Alert
             variant={variant}
             title={message.title}
-            description={message.description}
+            description={message?.description}
         />
       )}
     </AlertContext.Provider>

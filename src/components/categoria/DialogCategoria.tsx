@@ -5,13 +5,10 @@ import { Textarea } from "../ui/textarea";
 import { CirclePlus } from "lucide-react";
 
 import DialogForm from "../DialogForm";
-import api from "@/services/api";
 
 import type { Categoria } from "@/@types/Categoria";
 
 import { useCategoriaContext } from "./CategoriaProvider";
-import { useAlert } from "../AlertProvider";
-import { AlertEnum } from "@/enums/AlertEnum";
 
 export default function DialogCategoria({
   alterar,
@@ -22,8 +19,7 @@ export default function DialogCategoria({
   };
 }) {
 
-  const { showAlert } = useAlert();
-  const { carregaCategorias } = useCategoriaContext();
+  const { addCategory, updateCategory } = useCategoriaContext();
 
   const title = alterar ? "Alterar" : "Incluir";
 
@@ -53,31 +49,7 @@ export default function DialogCategoria({
         title: alterar ? "Alterar" : "Salvar",
         action: async (data) => {
           const categoria = data as Categoria;
-          const endpoint = alterar ? `/${categoria.codigo}` : ''
-          api[alterar ? "put" : "post"](`Categoria${endpoint}`, categoria)
-            .then(() => {
-              carregaCategorias(); // Recarrega os estados após a exclusão
-              showAlert(
-                {
-                  title: 'Sucesso!',
-                  description: `Categoria foi ${alterar ? 'alterada' : 'incluida'} com sucesso.`,
-                },
-                AlertEnum.SUCCESS
-              );
-            })
-            .catch((error) => {
-              const acao = alterar ? 'alterar' : 'incluir'
-              showAlert(
-                {
-                  title: "Falha!",
-                  description:
-                    `Não foi possível ${acao} a categoria, verifique o console.`,
-                },
-                AlertEnum.ERROR
-              );
-              console.error(`Erro ao ${acao} a categoria:`, error);
-            });
-          carregaCategorias();
+          alterar ? updateCategory(categoria.codigo, categoria) : addCategory(categoria)
         },
       }}
       form={[

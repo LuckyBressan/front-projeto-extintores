@@ -2,23 +2,18 @@
 import { DropdownMenuItem } from "../ui/dropdown-menu";
 
 import { useCategoriaContext } from "./CategoriaProvider";
-import { useAlert } from "../AlertProvider";
 
 import DialogForm from "../DialogForm";
 import DialogCategoria from "./DialogCategoria";
 
 import type { Categoria } from "@/@types/Categoria";
-import { AlertEnum } from "@/enums/AlertEnum";
-
-import api from "@/services/api";
 
 export default function DataTableActionsCategoria({
     dados
 } : {
     dados: Categoria
 }) {
-    const { carregaCategorias } = useCategoriaContext();
-    const { showAlert } = useAlert();
+    const { deleteCategory } = useCategoriaContext();
 
     return (
         <>
@@ -38,31 +33,7 @@ export default function DataTableActionsCategoria({
               }}
               submit={{
                 title: "Excluir",
-                action: () => {
-                  console.log("delete");
-                  api
-                    .delete(`Categoria/${dados.codigo}`)
-                    .then(() => {
-                      carregaCategorias(); // Recarrega os estados após a exclusão
-                      showAlert(
-                        {
-                          title: "Exclusão feita!",
-                          description: "Categoria foi excluída com sucesso.",
-                        },
-                        AlertEnum.SUCCESS
-                      );
-                    })
-                    .catch((error) => {
-                      showAlert(
-                        {
-                          title: "Exclusão falhou!",
-                          description: "Não foi possível excluir a categoria, verifique o console.",
-                        },
-                        AlertEnum.ERROR
-                      );
-                      console.error("Erro ao excluir o estado:", error);
-                    });
-                },
+                action: () => deleteCategory(dados.codigo),
               }}
             />
         </>
