@@ -53,7 +53,7 @@ export default function Alert({
   variant,
 }: {
   title: string;
-  description: string;
+  description?: string;
   variant: AlertEnum;
 }) {
   const { icon, cor } = AlertVariants[variant];
@@ -62,7 +62,12 @@ export default function Alert({
     <AlertComponent className={`${cor.background} ${cor.border} ${cor.textPrimary}`}>
       {icon}
       <AlertTitle>{title}</AlertTitle>
-      <AlertDescription className={cor.textSecondary}>
+      <AlertDescription 
+        className={`
+          ${cor.textSecondary}
+          ${!description && 'hide'}
+        `}
+      >
         {description}
       </AlertDescription>
     </AlertComponent>
