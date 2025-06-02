@@ -6,26 +6,24 @@ import { CirclePlus } from "lucide-react";
 
 import DialogForm from "../DialogForm";
 
-import type { Categoria } from "@/@types/Categoria";
+import type { Category } from "@/@types/Category";
 
-import { useCategoriaContext } from "./CategoriaProvider";
+import { useCategoryContext } from "./CategoryProvider";
 
-export default function DialogCategoria({
+export default function DialogCategory({
   alterar,
 }: {
   alterar?: {
     trigger: React.ReactNode;
-    dados: Categoria;
+    dados: Category;
   };
 }) {
-
-  const { addCategory, updateCategory } = useCategoriaContext();
+  const { addCategory, updateCategory } = useCategoryContext();
 
   const title = alterar ? "Alterar" : "Incluir";
 
-
   function handleKeyUp(
-    e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+
   ) {
     // if (!isNaN(Number(e.key))) {
     //   e.target.value = e.target.value.replace(/\d/g, "");
@@ -48,8 +46,8 @@ export default function DialogCategoria({
       submit={{
         title: alterar ? "Alterar" : "Salvar",
         action: async (data) => {
-          const categoria = data as Categoria;
-          alterar ? updateCategory(categoria.codigo, categoria) : addCategory(categoria)
+          const categoria = data as Category;
+          alterar ? updateCategory(categoria.codigo, categoria) : addCategory(categoria);
         },
       }}
       form={[
@@ -62,11 +60,11 @@ export default function DialogCategoria({
           input: (
             <Input
               id="codigo"
+              type="number"
               maxLength={2}
               required
               disabled={alterar ? true : false}
-              value={alterar?.dados.codigo}
-              onKeyUp={handleKeyUp}
+              defaultValue={alterar?.dados.codigo}
             />
           ),
         },

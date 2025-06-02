@@ -12,15 +12,15 @@ import {
 
 import { Input } from "@/components/ui/input";
 
-import { useCategoriaContext } from "./CategoriaProvider";
+import { useCategoryContext } from "./CategoryProvider";
 
-import type { Categoria } from "@/@types/Categoria";
+import type { Category } from "@/@types/Category";
 
 import DataTable from "../DataTable";
-import DialogCategoria from "./DialogCategoria";
-import DataTableActionsCategoria from "./DataTableActionsCategoria";
+import DialogCategory from "./DialogCategory";
+import DataTableActionsCategory from "./DataTableActionsCategory";
 
-const columns: ColumnDef<Categoria>[] = [
+const columns: ColumnDef<Category>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -82,7 +82,7 @@ const columns: ColumnDef<Categoria>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
-            <DataTableActionsCategoria dados={categoria} />
+            <DataTableActionsCategory dados={categoria} />
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -90,14 +90,14 @@ const columns: ColumnDef<Categoria>[] = [
   },
 ];
 
-export default function DataTableCategoria() {
-  const { categorias } = useCategoriaContext();
+export default function DataTableCategory() {
+  const { categorys } = useCategoryContext();
 
   return (
     <>
       <DataTable
         columns={columns}
-        data={categorias}
+        data={categorys}
         filters={[
           <Input
             name="nome"
@@ -105,7 +105,7 @@ export default function DataTableCategoria() {
             className="max-w-sm"
           />,
         ]}
-        actions={[<DialogCategoria />]}
+        actions={[<DialogCategory />]}
       />
     </>
   );
