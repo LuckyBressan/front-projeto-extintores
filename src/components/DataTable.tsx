@@ -82,7 +82,7 @@ export default function DataTable({
                 });
               }
               return filter;
-      
+
         })}
         {actions?.map(action => (
             action

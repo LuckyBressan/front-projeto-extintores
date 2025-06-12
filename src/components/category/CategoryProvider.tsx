@@ -6,23 +6,11 @@ import {
   type ReactNode,
 } from "react";
 
-import type { Category } from "@/@types/Category";
+import type { Category, CategoryContextType, CategoryUpdateStateAction, CategoryWithTotalProducts } from "@/@types/Category";
 import api from "@/services/api";
 import { useAlert } from "../AlertProvider";
 import { AlertEnum } from "@/enums/AlertEnum";
-
-type CategoryContextType = {
-  categorys: Category[];
-  loadCategory: () => void;
-  addCategory: (data: Category) => void;
-  updateCategory: (codigo: number, data: Category) => void;
-  deleteCategory: (codigo: number) => void;
-};
-
-type CategoryUpdateStateAction = {
-  alterar?: boolean;
-  excluir?: boolean;
-}
+import type { AxiosResponse } from "axios";
 
 const CategoryContext = createContext<CategoryContextType | undefined>(
   undefined
@@ -39,7 +27,11 @@ export function useCategoryContext() {
 }
 
 export function CategoryProvider({ children }: { children: ReactNode }) {
+
   const [categorys, setCategorys] = useState<Category[]>([]);
+  const [categorysWithMostProducts, setCategorysWithMostProducts] = useState<CategoryWithTotalProducts[]>([])
+  const [categoryWithLeastProducts, setCategoryWithLeastProducts] = useState<CategoryWithTotalProducts>({})
+
   const { showAlert } = useAlert();
 
   const updateCategoryState = (data: Category, action?: CategoryUpdateStateAction) => {
@@ -66,7 +58,7 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
       .catch((err) => {
         console.error("Erro ao carregar categorias:", err);
       });
-  }; 
+  };
 
   const updateCategory = (codigo: number, data: Category) => {
     if (!codigo || !data || codigo !== data.codigo) {
@@ -170,9 +162,27 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
       });
   };
 
+  const loadCategorysWithMostProducts = () => {
+    api.get('Categoria/categoriasMaisProdutos')
+      .then((res: AxiosResponse<CategoryWithTotalProducts[]>) => setCategorysWithMostProducts(res.data))
+      .catch(error => {
+        console.log('Erro ao procurar categoria com mais produtos:', error);
+      })
+  }
+
+  const loadCategoryWithLeastProducts = () => {
+    api.get('Categoria/categoriaMenosProdutos')
+      .then((res: AxiosResponse<CategoryWithTotalProducts>) => setCategoryWithLeastProducts(res.data))
+      .catch(error => {
+        console.log('Erro ao procurar categoria com mais produtos:', error);
+      })
+  }
+
   // Carrega ao montar
   useEffect(() => {
-    loadCategory();
+    loadCategory()
+    loadCategorysWithMostProducts()
+    loadCategoryWithLeastProducts()
   }, []);
 
   return (
@@ -183,6 +193,8 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
         addCategory,
         updateCategory,
         deleteCategory,
+        categorysWithMostProducts,
+        categoryWithLeastProducts
       }}>
       {children}
     </CategoryContext.Provider>

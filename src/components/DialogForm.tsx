@@ -12,10 +12,7 @@ import {
 } from "@/components/ui/dialog"
 import { DialogClose } from "@radix-ui/react-dialog";
 
-import Alert from "./Alert";
-
 import type React from "react"
-import { AlertEnum } from "@/enums/AlertEnum";
 
 
 export default function DialogForm({
@@ -49,33 +46,14 @@ export default function DialogForm({
 
   const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: Event) => {
+    e.preventDefault()
 
+    //Se não tiver formulário, apenas executa a função submit
     if(!form.length) {
       await submit.action({})
 
       setOpen(false)
-      return
-    }
-
-    let preenchidos = true;
-
-    for (const key in inputRefs.current) {
-      const input = inputRefs.current[key];
-      if (input?.required && !input?.value) {
-        preenchidos = false;
-        input?.classList.add("border-red-500");
-      } else {
-        input?.classList.remove("border-red-500");
-      }
-    }
-
-    if (!preenchidos) {
-      <Alert
-        title="Não foi possível cadastrar o estado!"
-        description="Os campos obrigatório não foram preenchidos."
-        type={AlertEnum.WARNING}
-      />
       return
     }
 
@@ -88,7 +66,7 @@ export default function DialogForm({
     setOpen(false);
   };
 
-  const enhancedForm = form.map(({ label, input }, index) => {
+  const enhancedForm = form.map(({ label, input }) => {
     if (isValidElement(input) && input?.props?.id) {
       return {
         label,
@@ -125,26 +103,28 @@ export default function DialogForm({
         {dialogTrigger}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>{dialog.title}</DialogTitle>
-          <DialogDescription>
-            {dialog.description}
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-            {enhancedForm.map(({ input, label }, index) => (
-                <div key={index} className="grid grid-cols-4 items-center gap-4">
-                    {label}
-                    {input}
-                </div>
-            ))}
-        </div>
-        <DialogFooter>
-            <Button onClick={handleSubmit}>{submit.title ?? 'Salvar'}</Button>
-            <DialogClose asChild>
-                <Button variant="secondary">Cancelar</Button>
-            </DialogClose>
-        </DialogFooter>
+        <form action="" onSubmit={handleSubmit}>
+          <DialogHeader>
+            <DialogTitle>{dialog.title}</DialogTitle>
+            <DialogDescription>
+              {dialog.description}
+            </DialogDescription>
+          </DialogHeader>
+            <div className="grid gap-4 py-4">
+                {enhancedForm.map(({ input, label }, index) => (
+                    <div key={index} className="grid grid-cols-4 items-center gap-4">
+                        {label}
+                        {input}
+                    </div>
+                ))}
+            </div>
+          <DialogFooter>
+              <Button type="submit">{submit.title ?? 'Salvar'}</Button>
+              <DialogClose asChild>
+                  <Button variant="secondary">Cancelar</Button>
+              </DialogClose>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   )

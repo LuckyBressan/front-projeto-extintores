@@ -30,6 +30,15 @@ export default function DialogCategory({
     // }
   }
 
+  const handleSubmit = (category: Category, alterar: boolean) => {
+
+    if(alterar) {
+      updateCategory(category.codigo, category)
+      return;
+    }
+    addCategory(category);
+  }
+
   return (
     <DialogForm
       trigger={{
@@ -46,8 +55,7 @@ export default function DialogCategory({
       submit={{
         title: alterar ? "Alterar" : "Salvar",
         action: async (data) => {
-          const categoria = data as Category;
-          alterar ? updateCategory(categoria.codigo, categoria) : addCategory(categoria);
+          handleSubmit(data as Category, !!alterar)
         },
       }}
       form={[
