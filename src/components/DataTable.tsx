@@ -22,18 +22,26 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { ChevronDown, Columns } from "lucide-react";
+import type { Product } from "@/@types/Product";
+import type { Category } from "@/@types/Category";
+
+interface DataTableProps {
+  data   : Array<Product|Category>;
+  columns: ColumnDef<Product|Category>[];
+  filters?: React.ReactNode[];
+  actions?: React.ReactNode[];
+  visibilityColumnsControl?: boolean
+}
 
 export default function DataTable({
     data,
     columns,
     filters,
-    actions
-} : {
-    data: any[];
-    columns: ColumnDef<any, any>[];
-    filters?: React.ReactNode[];
-    actions?: React.ReactNode[];
-}) {
+    actions,
+    visibilityColumnsControl = true
+} : DataTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -87,6 +95,42 @@ export default function DataTable({
         {actions?.map(action => (
             action
         ))}
+        {
+          visibilityColumnsControl &&
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Columns />
+                <span className="hidden lg:inline">Visibilidade das Colunas</span>
+                <span className="lg:hidden">Colunas</span>
+                <ChevronDown />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              {table
+                .getAllColumns()
+                .filter(
+                  (column) =>
+                    typeof column.accessorFn !== "undefined" &&
+                    column.getCanHide()
+                )
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  )
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        }
       </div>
       <div className="rounded-md border">
         <Table>
@@ -95,7 +139,7 @@ export default function DataTable({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} colSpan={header.colSpan}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
