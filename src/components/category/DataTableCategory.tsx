@@ -64,6 +64,7 @@ const columns: ColumnDef<Category>[] = [
   },
   {
     accessorKey: "descricao",
+    header: "Descrição",
     cell: ({ row }) => <div>{row.getValue("descricao")}</div>,
   },
   {
@@ -106,6 +107,7 @@ export default function DataTableCategory() {
           />,
         ]}
         actions={[<DialogCategory />]}
+        visibilityColumnsControl={false}
       />
     </>
   );

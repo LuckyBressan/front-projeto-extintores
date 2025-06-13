@@ -6,11 +6,12 @@ import {
   type ReactNode,
 } from "react";
 
-import type { Category, CategoryContextType, CategoryUpdateStateAction, CategoryWithTotalProducts } from "@/@types/Category";
+import type { Category, CategoryContextType, CategoryWithTotalProducts } from "@/@types/Category";
 import api from "@/services/api";
 import { useAlert } from "../AlertProvider";
 import { AlertEnum } from "@/enums/AlertEnum";
 import type { AxiosResponse } from "axios";
+import type { UpdateStateAction } from "@/@types/State";
 
 const CategoryContext = createContext<CategoryContextType | undefined>(
   undefined
@@ -34,7 +35,7 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
 
   const { showAlert } = useAlert();
 
-  const updateCategoryState = (data: Category, action?: CategoryUpdateStateAction) => {
+  const updateCategoryState = (data: Category, action?: UpdateStateAction) => {
     setCategorys(prevCategory => {
 
         //Se for ação de alterar, alteramos uma das categorias salvas no state
@@ -189,7 +190,6 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
     <CategoryContext.Provider
       value={{
         categorys,
-        loadCategory,
         addCategory,
         updateCategory,
         deleteCategory,

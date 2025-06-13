@@ -6,7 +6,6 @@ export interface Category {
 
 export interface CategoryContextType {
   categorys   : Category[];
-  loadCategory: () => void;
   addCategory : (data: Category) => void;
   updateCategory: (codigo: number, data: Category) => void;
   deleteCategory: (codigo: number) => void;
