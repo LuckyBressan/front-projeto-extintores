@@ -68,6 +68,7 @@ export default function DialogCategory({
           input: (
             <Input
               id="codigo"
+              name="codigo"
               type="number"
               maxLength={2}
               required
@@ -85,6 +86,7 @@ export default function DialogCategory({
           input: (
             <Input
               id="nome"
+              name="nome"
               required
               defaultValue={alterar?.dados.nome}
               className="col-span-3"
@@ -101,6 +103,7 @@ export default function DialogCategory({
           input: (
             <Textarea
               id="descricao"
+              name="descricao"
               required
               defaultValue={alterar?.dados.descricao}
               className="col-span-3"

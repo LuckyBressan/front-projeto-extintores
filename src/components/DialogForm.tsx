@@ -45,42 +45,52 @@ export default function DialogForm({
     form = [],
 } : DialogFormProps) {
 
-  const [open, setOpen] = useState(false)
-
+  const [open, setOpen] = useState(false);
   const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+const selectValues = useRef<Record<string, string>>({}); // Adicionado para armazenar valores de Select
 
   const handleSubmit = async (e: Event) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    //Se não tiver formulário, apenas executa a função submit
-    if(!form.length) {
-      await submit.action({})
-
-      setOpen(false)
-      return
+    if (!form.length) {
+      await submit.action({});
+      setOpen(false);
+      return;
     }
 
     // Mapeia os valores para enviar
-    const data = Object.fromEntries(
-      Object.entries(inputRefs.current).map(([key, input]) => [key, input?.value])
-    );
-    await submit.action(data);
+    const data = Object.fromEntries([
+      ...Object.entries(inputRefs.current).map(([key, input]) => [key, input?.value]),
+      ...Object.entries(selectValues.current), // Inclui valores de Select
+    ]);
 
+    await submit.action(data);
     setOpen(false);
   };
 
   const handleOpenChange = (open: boolean) => {
     onOpenChange?.(open);
     setOpen(open);
-  }
+  };
 
   const enhancedForm = form.map(({ label, input }) => {
-    if (isValidElement(input) && input?.props?.id) {
+    if (isValidElement(input) && input?.props?.name) {
+      if (input.type?.name === "Select") { // Verifica se é um Select
+        return {
+          label,
+          input: cloneElement(input, {
+            onValueChange: (value: string) => {
+              selectValues.current[input?.props?.name] = value; // Atualiza o valor do Select
+            },
+          }),
+        };
+      }
+
       return {
         label,
         input: cloneElement(input, {
           ref: (el: HTMLInputElement) => {
-            inputRefs.current[input?.props?.id] = el;
+            inputRefs.current[input?.props?.name] = el; // Armazena a referência do input
           },
         }),
       };
@@ -103,7 +113,6 @@ export default function DialogForm({
           {trigger?.info?.title}
         </Button>
       );
-
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -135,5 +144,5 @@ export default function DialogForm({
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

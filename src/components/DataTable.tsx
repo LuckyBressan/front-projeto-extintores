@@ -26,10 +26,11 @@ import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMe
 import { ChevronDown, Columns } from "lucide-react";
 import type { Product } from "@/@types/Product";
 import type { Category } from "@/@types/Category";
+import type { Client } from "@/@types/Client";
 
 interface DataTableProps {
-  data   : Array<Product|Category>;
-  columns: ColumnDef<Product|Category>[];
+  data   : Array<Product|Category|Client>;
+  columns: ColumnDef<Product|Category|Client>[];
   filters?: React.ReactNode[];
   actions?: React.ReactNode[];
   visibilityColumnsControl?: boolean
