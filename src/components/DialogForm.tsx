@@ -14,33 +14,36 @@ import { DialogClose } from "@radix-ui/react-dialog";
 
 import type React from "react"
 
+interface DialogFormProps {
+  trigger: {
+    info?: {
+      title: string;
+      icon : React.ReactNode;
+    };
+    obj?: React.ReactNode;
+  };
+  dialog: {
+      title: string;
+      description: string;
+  };
+  submit: {
+      title: string;
+      action: (data: Record<string, any>) => void;
+  };
+  onOpenChange?: (open: boolean) => void;
+  form?: {
+      label: React.ReactNode;
+      input: React.ReactNode;
+  }[];
+}
 
 export default function DialogForm({
     trigger = {},
     dialog,
     submit,
+    onOpenChange,
     form = [],
-} : {
-    trigger: {
-      info?: {
-        title: string;
-        icon : React.ReactNode;
-      };
-      obj?: React.ReactNode;
-    };
-    dialog: {
-        title: string;
-        description: string;
-    };
-    submit: {
-        title: string;
-        action: (data: Record<string, any>) => void;
-    };
-    form?: {
-        label: React.ReactNode;
-        input: React.ReactNode;
-    }[];
-}) {
+} : DialogFormProps) {
 
   const [open, setOpen] = useState(false)
 
@@ -65,6 +68,11 @@ export default function DialogForm({
 
     setOpen(false);
   };
+
+  const handleOpenChange = (open: boolean) => {
+    onOpenChange?.(open);
+    setOpen(open);
+  }
 
   const enhancedForm = form.map(({ label, input }) => {
     if (isValidElement(input) && input?.props?.id) {
@@ -98,7 +106,7 @@ export default function DialogForm({
 
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         {dialogTrigger}
       </DialogTrigger>

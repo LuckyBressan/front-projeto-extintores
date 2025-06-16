@@ -2,12 +2,18 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 
-import { CirclePlus } from "lucide-react";
+import { ChevronDown, CirclePlus } from "lucide-react";
 
 import DialogForm from "../DialogForm";
 
 import type { Product } from "@/@types/Product";
 import { useProductContext } from "./ProductProvider";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { Button } from "../ui/button";
+import { MdCategory } from "react-icons/md";
+import { useCategoryContext } from "../category/CategoryProvider";
+import { useEffect, useState } from "react";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 export default function DialogProduct({
   alterar,
@@ -17,7 +23,11 @@ export default function DialogProduct({
     dados: Product;
   };
 }) {
+
+  const { categorys } = useCategoryContext();
   const { addProduct, updateProduct } = useProductContext();
+  
+  const [categorySelected, setCategorySelected] = useState('');
 
   const title = alterar ? "Alterar" : "Incluir";
 
@@ -54,9 +64,12 @@ export default function DialogProduct({
       submit={{
         title: alterar ? "Alterar" : "Salvar",
         action: async (data) => {
-          handleSubmit(data as Product, !!alterar)
-        },
+          console.log(data)
+          // handleSubmit(data as Product, !!alterar)
+        }
       }}
+      //Fechar o dialog, limpa o state
+      onOpenChange={open => !open && setCategorySelected('')}
       form={[
         {
           label: (
@@ -105,6 +118,68 @@ export default function DialogProduct({
               className="col-span-3"
               onKeyUp={handleKeyUp}
             />
+          ),
+        },
+        {
+          label: (
+            <Label htmlFor="preco" className="text-right">
+              Preço
+            </Label>
+          ),
+          input: (
+            <Input
+              id="preco"
+              type="number"
+              required
+              defaultValue={alterar?.dados.preco}
+              className="col-span-3"
+              onKeyUp={handleKeyUp}
+            />
+          ),
+        },
+        {
+          label: (
+            <Label htmlFor="quantidade" className="text-right">
+              Quantidade
+            </Label>
+          ),
+          input: (
+            <Input
+              id="quantidade"
+              type="number"
+              required
+              defaultValue={alterar?.dados.quantidade}
+              className="col-span-3"
+              onKeyUp={handleKeyUp}
+            />
+          ),
+        },
+        {
+          label: (
+            <Label htmlFor="categoria" className="text-right">
+              Categoria
+            </Label>
+          ),
+          input: (
+            <Select>
+              <SelectTrigger>
+                <SelectValue placeholder="Selecione uma categoria" className="capitalize" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {categorys.map(category => (
+                    <SelectItem
+                      key={`categoria-${category.codigo}`}
+                      value={category.nome}
+                      className="capitalize"
+                      onClick={() => setCategorySelected(category.nome)}
+                    >
+                      {category.nome}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           ),
         },
       ]}

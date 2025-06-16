@@ -6,6 +6,7 @@ export interface Category {
 
 export interface CategoryContextType {
   categorys   : Category[];
+  loadCategorys: () => Promise<void|Category[]>;
   addCategory : (data: Category) => void;
   updateCategory: (codigo: number, data: Category) => void;
   deleteCategory: (codigo: number) => void;

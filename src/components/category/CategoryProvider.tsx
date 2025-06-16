@@ -27,7 +27,7 @@ export function useCategoryContext() {
   return context;
 }
 
-export function CategoryProvider({ children }: { children: ReactNode }) {
+export function CategoryProvider({ load = true, children }: { load: boolean, children: ReactNode }) {
 
   const [categorys, setCategorys] = useState<Category[]>([]);
   const [categorysWithMostProducts, setCategorysWithMostProducts] = useState<CategoryWithTotalProducts[]>([])
@@ -52,10 +52,13 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
       })
   }
 
-  const loadCategory = () => {
-    api
+  const loadCategorys = () => {
+    return api
       .get("Categoria")
-      .then((res) => setCategorys(res.data))
+      .then((res: AxiosResponse<Category[], any>) => {
+        setCategorys(res.data)
+        return res.data;
+      })
       .catch((err) => {
         console.error("Erro ao carregar categorias:", err);
       });
@@ -179,17 +182,20 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
       })
   }
 
-  // Carrega ao montar
-  useEffect(() => {
-    loadCategory()
-    loadCategorysWithMostProducts()
-    loadCategoryWithLeastProducts()
-  }, []);
+  if(load) {
+    // Carrega ao montar
+    useEffect(() => {
+      loadCategorys()
+      loadCategorysWithMostProducts()
+      loadCategoryWithLeastProducts()
+    }, []);
+  }
 
   return (
     <CategoryContext.Provider
       value={{
         categorys,
+        loadCategorys,
         addCategory,
         updateCategory,
         deleteCategory,
