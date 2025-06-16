@@ -7,7 +7,7 @@ export interface Product {
     preco          : number;
     quantidade     : number;
     categoriaCodigo: number;
-    categoria      : Category;
+    categoria      ?: Category;
 }
 
 export interface ProductContextType {

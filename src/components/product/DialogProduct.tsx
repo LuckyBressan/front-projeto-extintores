@@ -2,18 +2,20 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 
-import { ChevronDown, CirclePlus } from "lucide-react";
+import { CirclePlus } from "lucide-react";
 
 import DialogForm from "../DialogForm";
 
 import type { Product } from "@/@types/Product";
 import { useProductContext } from "./ProductProvider";
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
-import { MdCategory } from "react-icons/md";
 import { useCategoryContext } from "../category/CategoryProvider";
 import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import type { Category } from "@/@types/Category";
+
+interface ProductSubmit extends Omit<Product, "categoria"> {
+  categoria: string;
+}
 
 export default function DialogProduct({
   alterar,
@@ -24,28 +26,36 @@ export default function DialogProduct({
   };
 }) {
 
-  const { categorys } = useCategoryContext();
+  const { loadCategorys } = useCategoryContext();
   const { addProduct, updateProduct } = useProductContext();
   
-  const [categorySelected, setCategorySelected] = useState('');
+  const [categorys, setCategorys] = useState<Category[]>([]);
 
   const title = alterar ? "Alterar" : "Incluir";
 
-  function handleKeyUp(
-
-  ) {
-    // if (!isNaN(Number(e.key))) {
-    //   e.target.value = e.target.value.replace(/\d/g, "");
-    // }
+  const handleLoadCategory = async () => {
+    setCategorys(await loadCategorys() ?? []);
   }
 
-  const handleSubmit = (product: Product, alterar: boolean) => {
+  useEffect(() => {
+    handleLoadCategory()
+  }, [])
+
+  const handleSubmit = (product: ProductSubmit, alterar: boolean) => {
 
     if(alterar) {
-      updateProduct(product.codigo, product)
+      updateProduct(product.codigo, {
+        ...product,
+        categoria: undefined,
+        categoriaCodigo: parseInt(product.categoria) // Convertendo para número
+      })
       return;
     }
-    addProduct(product);
+    addProduct({
+      ...product,
+      categoria: undefined,
+      categoriaCodigo: parseInt(product.categoria) // Convertendo para número
+    });
   }
 
   return (
@@ -64,12 +74,10 @@ export default function DialogProduct({
       submit={{
         title: alterar ? "Alterar" : "Salvar",
         action: async (data) => {
-          console.log(data)
-          // handleSubmit(data as Product, !!alterar)
+          handleSubmit(data as ProductSubmit, !!alterar)
         }
       }}
-      //Fechar o dialog, limpa o state
-      onOpenChange={open => !open && setCategorySelected('')}
+  
       form={[
         {
           label: (
@@ -80,6 +88,7 @@ export default function DialogProduct({
           input: (
             <Input
               id="codigo"
+              name="codigo"
               type="number"
               maxLength={2}
               required
@@ -97,10 +106,10 @@ export default function DialogProduct({
           input: (
             <Input
               id="nome"
+              name="nome"
               required
               defaultValue={alterar?.dados.nome}
               className="col-span-3"
-              onKeyUp={handleKeyUp}
             />
           ),
         },
@@ -113,10 +122,10 @@ export default function DialogProduct({
           input: (
             <Textarea
               id="descricao"
+              name="descricao"
               required
               defaultValue={alterar?.dados.descricao}
               className="col-span-3"
-              onKeyUp={handleKeyUp}
             />
           ),
         },
@@ -129,11 +138,11 @@ export default function DialogProduct({
           input: (
             <Input
               id="preco"
+              name="preco"
               type="number"
               required
               defaultValue={alterar?.dados.preco}
               className="col-span-3"
-              onKeyUp={handleKeyUp}
             />
           ),
         },
@@ -146,11 +155,11 @@ export default function DialogProduct({
           input: (
             <Input
               id="quantidade"
+              name="quantidade"
               type="number"
               required
               defaultValue={alterar?.dados.quantidade}
               className="col-span-3"
-              onKeyUp={handleKeyUp}
             />
           ),
         },
@@ -161,22 +170,23 @@ export default function DialogProduct({
             </Label>
           ),
           input: (
-            <Select>
+            <Select name="categoria" defaultValue={alterar?.dados.categoriaCodigo?.toString() ?? ""} >
               <SelectTrigger>
                 <SelectValue placeholder="Selecione uma categoria" className="capitalize" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  {categorys.map(category => (
-                    <SelectItem
-                      key={`categoria-${category.codigo}`}
-                      value={category.nome}
-                      className="capitalize"
-                      onClick={() => setCategorySelected(category.nome)}
-                    >
-                      {category.nome}
-                    </SelectItem>
-                  ))}
+                  {
+                    categorys.map(category => (
+                      <SelectItem
+                        key={`categoria-${category.codigo}`}
+                        value={category.codigo.toString()}
+                        className="capitalize"
+                      >
+                        {category.nome}
+                      </SelectItem>
+                    ))
+                  }
                 </SelectGroup>
               </SelectContent>
             </Select>

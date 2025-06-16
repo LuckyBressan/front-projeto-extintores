@@ -6,7 +6,7 @@ import { CategoryProvider } from "@/components/category/CategoryProvider";
 export default function ProductPage() {
   return (
     <>
-      <CategoryProvider>
+      <CategoryProvider load={false}>
         <ProductProvider>
           {/* <SectionCardsCategory />
           <ChartsCategory /> */}
